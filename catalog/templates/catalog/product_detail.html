@@ -1,0 +1,15 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<h1>{{ product.name }}</h1>
+
+<p>{{ product.description }}</p>
+
+<p>{{ product.price }}</p>
+
+{% if product.image %}
+    <img src="{{ product.image.url }}">
+{% endif %}
+
+{% endblock %}
