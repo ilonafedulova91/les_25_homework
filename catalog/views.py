@@ -1,74 +1,53 @@
-from django.core.paginator import Paginator
-from django.shortcuts import redirect, render
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic import CreateView, DetailView, ListView, TemplateView
 
 from .forms import ProductForm
 from .models import Product
 
 
 # Create your views here.
-def home(request):
-    products = Product.objects.all()
-
-    paginator = Paginator(products, 4)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
-
-    context = {
-        "page_obj": page_obj,
-    }
-
-    return render(request, "catalog/home.html", context)
+class HomeListView(ListView):
+    model = Product
+    template_name = "catalog/home.html"
+    paginate_by = 4
 
 
-def contacts(request):
-    success = None
-    name = None
-    phone = None
-    message = None
+class ContactsView(View):
+    template_name = "catalog/contacts.html"
 
-    if request.method == "POST":
-        name = request.POST.get("name")
-        phone = request.POST.get("phone")
-        message = request.POST.get("message")
+    def get(self, request):
+        return render(request, self.template_name)
 
-        print(name, phone, message)
+    def post(self, request):
+        context = {
+            "success": "Сообщение успешно отправлено!",
+            "name": request.POST.get("name"),
+            "phone": request.POST.get("phone"),
+            "message": request.POST.get("message"),
+        }
 
-        success = "Сообщение успешно отправлено!"
+        print(
+            context["name"],
+            context["phone"],
+            context["message"],
+        )
 
-    return render(
-        request,
-        "catalog/contacts.html",
-        {
-            "success": success,
-            "name": name,
-            "phone": phone,
-            "message": message,
-        },
-    )
+        return render(request, self.template_name, context)
 
 
-def product_detail(request, pk):
-    product = Product.objects.get(pk=pk)
-
-    context = {
-        "product": product,
-    }
-
-    return render(request, "catalog/product_detail.html", context)
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = "catalog/product_detail.html"
+    context_object_name = "product"
 
 
-def product_create(request):
-    if request.method == "POST":
-        form = ProductForm(request.POST, request.FILES)
-
-        if form.is_valid():
-            form.save()
-            return redirect("home")
-
-    else:
-        form = ProductForm()
-
-    return render(request, "catalog/product_form.html", {"form": form})
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = "catalog/product_form.html"
+    success_url = reverse_lazy("home")
 
 
 # 3. Configure the URLs

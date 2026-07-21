@@ -1,0 +1,17 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+
+<form method="post">
+
+    {% csrf_token %}
+
+    <h3>Удалить статью?</h3>
+
+    <button class="btn btn-danger">
+        Да
+    </button>
+
+</form>
+
+{% endblock %}
