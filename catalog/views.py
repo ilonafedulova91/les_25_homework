@@ -6,6 +6,8 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView, D
 from .forms import ProductForm
 from .models import Product
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 # Create your views here.
 class HomeListView(ListView):
@@ -37,25 +39,25 @@ class ContactsView(View):
         return render(request, self.template_name, context)
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = "catalog/product_detail.html"
     context_object_name = "product"
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = "catalog/product_form.html"
     success_url = reverse_lazy("home")
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = "catalog/product_form.html"
     success_url = reverse_lazy("home")
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     template_name = "catalog/product_delete.html"
     success_url = reverse_lazy("home")
