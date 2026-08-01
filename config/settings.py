@@ -127,4 +127,6 @@ AUTH_USER_MODEL = "users.User"
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
+EMAIL_HOST_USER = "admin@skystore.local"
+
 LOGIN_URL = "users:login"
