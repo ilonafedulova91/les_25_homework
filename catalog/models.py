@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -33,11 +34,23 @@ class Product(models.Model):
     updated_at = models.DateTimeField(
         auto_now=True, verbose_name="Дата последнего изменения"
     )
+    is_published = models.BooleanField(default=False, verbose_name="Опубликовано")
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="Владелец",
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = "Продукт"
         verbose_name_plural = "Продукты"
         ordering = ("name",)
+
+        permissions = [
+            ("can_unpublish_product", "Can unpublish product"),
+        ]
 
     def __str__(self):
         return self.name

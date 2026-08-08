@@ -5,17 +5,60 @@ from .models import User
 
 # Register your models here.
 
+
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    ordering = ('email',)
+    ordering = ("email",)
 
-    list_display = ('email', 'first_name', 'last_name', 'phone_number', 'country', 'is_staff')
-
-    fieldsets = UserAdmin.fieldsets + (
-        ('Дополнительная информация',
-         {'fields': ('phone_number', 'country', 'avatar')}),
+    list_display = (
+        "email",
+        "first_name",
+        "last_name",
+        "phone_number",
+        "country",
+        "is_staff",
     )
 
-    add_fieldsets = UserAdmin.add_fieldsets + (
-       (None, {'fields': ('phone_number', 'country', 'avatar')})
+    fieldsets = (
+        (None, {"fields": ("email", "password")}),
+        (
+            "Personal information",
+            {
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "phone_number",
+                    "country",
+                    "avatar",
+                )
+            },
+        ),
+        (
+            "Permissions",
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                )
+            },
+        ),
+        ("Important dates", {"fields": ("last_login", "date_joined")}),
+    )
+
+    add_fieldsets = (
+        None,
+        {
+            "classes": ("wide",),
+            "fields": (
+                "email",
+                "password1",
+                "password3",
+                "phone_number",
+                "country",
+                "avatar",
+            ),
+        },
     )
