@@ -1,17 +1,23 @@
-from django.contrib.auth.mixins import (LoginRequiredMixin,
-                                        PermissionRequiredMixin)
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
-                                  UpdateView)
+from django.views.decorators.cache import cache_page
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
+)
 
 from .forms import ProductForm
 from .models import Product
+from .services import get_products_by_category
 
 
-# Create your views here.
 class HomeListView(ListView):
     model = Product
     template_name = "catalog/home.html"
@@ -41,6 +47,7 @@ class ContactsView(View):
         return render(request, self.template_name, context)
 
 
+@method_decorator(cache_page(60 * 15), name="dispatch")
 class ProductDetailView(DetailView):
     model = Product
     template_name = "catalog/product_detail.html"
@@ -100,4 +107,9 @@ class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, UpdateVi
         return redirect("product_detail", pk=pk)
 
 
-# 3. Configure the URLs
+def products_by_category(request, category_id):
+    products = get_products_by_category(category_id)
+
+    context = {"products": products}
+
+    return render(request, "catalog/products_by_category.html", context)
