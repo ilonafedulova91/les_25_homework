@@ -22,4 +22,9 @@ urlpatterns = [
         views.ProductUnpublishView.as_view(),
         name="product_unpublish",
     ),
+    path(
+        "category/<int:category_id>/",
+        views.products_by_category,
+        name="products_by_category",
+    ),
 ]

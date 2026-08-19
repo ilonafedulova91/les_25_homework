@@ -1,0 +1,32 @@
+{% extends "catalog/base.html" %}
+
+{% block content %}
+
+<h2>Products</h2>
+
+{% if products %}
+    <ul>
+        {% for product in products %}
+            <div class="card mb-3">
+                <div class="card-body">
+
+                    <h3>{{ product.name }}</h3>
+
+                    <p>{{ product.description|truncatechars:100 }}</p>
+
+                    <h5>${{ product.purchase_price }}</h5>
+
+                    <a href="{% url 'product_detail' product.pk %}"
+                       class="btn btn-primary">
+                        Подробнее
+                    </a>
+
+                </div>
+            </div>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No products found in this category.</p>
+{% endif %}
+
+{% endblock %}
